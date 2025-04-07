@@ -84,17 +84,38 @@ class ViewController: UITableViewController {
             }
     }
     
-    
+    //check with the given word in title
+    //so that entered word only contains the letter that are included in the title.
     func isPossible(word: String) -> Bool {
-        return true
-    }
+        guard var tempWord = title?.lowercased() else { return false }
 
+            for letter in word {
+                if let position = tempWord.firstIndex(of: letter) {
+                    tempWord.remove(at: position)
+                } else {
+                    return false
+                }
+            }
+
+            return true
+    }
+    
+    //already entered before check
     func isOriginal(word: String) -> Bool {
-        return true
+        return !usedWords.contains(word)
     }
 
+    //check for word validity in dictionary
     func isReal(word: String) -> Bool {
-        return true
+        let checker = UITextChecker()
+            //Emoji are actually just special character combinations behind the scenes, and they are measured differently with Swift strings and UTF-16 strings: Swift strings count them as 1-letter strings, but UTF-16 considers them to be 2-letter strings. This means if you use count with UIKit methods, you run the risk of miscounting the string length.
+            //I realize this seems like pointless additional complexity, so let me try to give you a simple rule: when you’re working with UIKit, SpriteKit, or any other Apple framework, use utf16.count for the character count. If it’s just your own code - i.e. looping over characters and processing each one individually – then use count instead.
+            let range = NSRange(location: 0, length: word.utf16.count) //***IMP concept**//
+            //UIkit is originally written in objective C
+            let misspelledRange = checker.rangeOfMisspelledWord(in: word, range: range, startingAt: 0, wrap: false, language: "en")
+            // NSNotFound is telling us the word is spelled correctly – i.e., it's a valid word.
+            // No mis-spellings found
+            return misspelledRange.location == NSNotFound
     }
     
 
