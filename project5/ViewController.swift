@@ -77,7 +77,9 @@ class ViewController: UITableViewController {
         
         let errorTitle: String
            let errorMessage: String
-
+        
+        if isLongEnough(word: lowerAnswer) {
+            
             if isPossible(word: lowerAnswer) {
                 if isOriginal(word: lowerAnswer) {
                     if isReal(word: lowerAnswer) {
@@ -98,6 +100,10 @@ class ViewController: UITableViewController {
                 errorTitle = "Word not possible"
                 errorMessage = "You can't spell that word from \(title)"
             }
+        }else{
+            errorTitle = "Word length less than 3"
+            errorMessage = "Guess some lengthy words!"
+        }
         let ac = UIAlertController(title: errorTitle, message: errorMessage, preferredStyle: .alert)
             ac.addAction(UIAlertAction(title: "OK", style: .default))
             present(ac, animated: true)
@@ -106,6 +112,9 @@ class ViewController: UITableViewController {
     //check with the given word in title
     //so that entered word only contains the letter that are included in the title.
     func isPossible(word: String) -> Bool {
+        
+        
+        
         guard var tempWord = title?.lowercased() else { return false }
 
             for letter in word {
@@ -126,6 +135,7 @@ class ViewController: UITableViewController {
 
     //check for word validity in dictionary
     func isReal(word: String) -> Bool {
+        
         let checker = UITextChecker()
             //Emoji are actually just special character combinations behind the scenes, and they are measured differently with Swift strings and UTF-16 strings: Swift strings count them as 1-letter strings, but UTF-16 considers them to be 2-letter strings. This means if you use count with UIKit methods, you run the risk of miscounting the string length.
             //I realize this seems like pointless additional complexity, so let me try to give you a simple rule: when you’re working with UIKit, SpriteKit, or any other Apple framework, use utf16.count for the character count. If it’s just your own code - i.e. looping over characters and processing each one individually – then use count instead.
@@ -135,6 +145,14 @@ class ViewController: UITableViewController {
             // NSNotFound is telling us the word is spelled correctly – i.e., it's a valid word.
             // No mis-spellings found
             return misspelledRange.location == NSNotFound
+    }
+    
+    func isLongEnough(word: String) -> Bool {
+        if(word.count<3){
+            return false;
+        }else{
+            return true;
+        }
     }
     
 
